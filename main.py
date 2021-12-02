@@ -12,7 +12,7 @@ matplotlib.use("TKAgg")
 with open("models/repressilator_modular.model") as model:
   r = te.loada(model.read())
 
-# simulate from 0 to 50 with 100 steps
+# simulate from 0 to max_time, plotting every minute
 max_time = 600.0
 r.simulate(0, max_time, int(max_time))
 # plot the simulation
