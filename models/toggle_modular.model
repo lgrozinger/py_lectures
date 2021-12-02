@@ -1,0 +1,60 @@
+function hillrepression(TF, K, n)
+  K^n / (K^n + TF^n)
+end
+
+model repressed_gene(rna_synth, prot_synth, rna_deg, prot_deg, n, K)
+  var species TF;
+  var species RNA;
+  var species PROTEIN;
+
+  -> RNA;  rna_synth * hillrepression(TF, K, n);
+  RNA -> ; rna_deg * RNA;
+
+  RNA -> PROTEIN + RNA; prot_synth * RNA;
+  PROTEIN -> ;          prot_deg * PROTEIN;
+end
+
+model inactivation(binding, unbinding, deg)
+  var species I;
+  var species PROTEIN;
+
+  I + PROTEIN -> IPROTEIN; binding * I * PROTEIN;
+  IPROTEIN -> I + PROTEIN; unbinding * IPROTEIN;
+  I -> ;                   I * deg;
+  IPROTEIN ->  ;           IPROTEIN * deg;
+end
+
+model toggle_switch
+  tc_rate = 1e0;
+  tl_rate = 1e-1;
+  rna_deg = 1e-1;
+  prot_deg = 1e-1;
+
+  binding = 1e-1;
+  unbinding = 1e-3;
+
+  # the genes
+  A: repressed_gene(tc_rate, tl_rate, rna_deg, prot_deg, 2.0, 0.5);
+  B: repressed_gene(tc_rate, tl_rate, rna_deg, prot_deg, 2.0, 0.5);
+  B.TF is A.PROTEIN;
+  A.TF is B.PROTEIN;
+
+  # initial conditions
+  A.PROTEIN = 1e0;
+  B.PROTEIN = 0.0;
+
+  # the inducers
+  I: inactivation(binding, unbinding, prot_deg)
+  J: inactivation(binding, unbinding, prot_deg)
+  I.PROTEIN is A.PROTEIN
+  J.PROTEIN is B.PROTEIN
+
+  # induction events occuring
+  var species IPTG;
+  IPTG is I.I;
+  at (time > 180): IPTG = 5e1;
+
+  var species ATC;
+  ATC is J.I;
+  at (time > 360.0): ATC = 5e1;
+end
