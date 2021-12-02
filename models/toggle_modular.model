@@ -1,28 +1,4 @@
-function hillrepression(TF, K, n)
-  K^n / (K^n + TF^n)
-end
-
-model repressed_gene(rna_synth, prot_synth, rna_deg, prot_deg, n, K)
-  var species TF;
-  var species RNA;
-  var species PROTEIN;
-
-  -> RNA;  rna_synth * hillrepression(TF, K, n);
-  RNA -> ; rna_deg * RNA;
-
-  RNA -> PROTEIN + RNA; prot_synth * RNA;
-  PROTEIN -> ;          prot_deg * PROTEIN;
-end
-
-model inactivation(binding, unbinding, deg)
-  var species I;
-  var species PROTEIN;
-
-  I + PROTEIN -> IPROTEIN; binding * I * PROTEIN;
-  IPROTEIN -> I + PROTEIN; unbinding * IPROTEIN;
-  I -> ;                   I * deg;
-  IPROTEIN ->  ;           IPROTEIN * deg;
-end
+import "models/genetics.model"
 
 model toggle_switch
   tc_rate = 1e0;

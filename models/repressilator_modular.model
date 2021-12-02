@@ -1,0 +1,22 @@
+import "models/genetics.model"
+
+model genetic_oscillator
+  tc_rate = 1e0;
+  tl_rate = 1e-1;
+  rna_deg = 1e-1;
+  prot_deg = 1e-1;
+
+  # the genes
+  A: repressed_gene(tc_rate, tl_rate, rna_deg, prot_deg, 2.0, 0.5);
+  B: repressed_gene(tc_rate, tl_rate, rna_deg, prot_deg, 2.0, 0.5);
+  C: repressed_gene(tc_rate, tl_rate, rna_deg, prot_deg, 2.0, 0.5);
+
+  A.TF is C.PROTEIN;
+  B.TF is A.PROTEIN;
+  C.TF is B.PROTEIN;
+
+  # initial conditions
+  A.PROTEIN = 1e0;
+  B.PROTEIN = 0.0;
+  C.PROTEIN = 0.0;
+end

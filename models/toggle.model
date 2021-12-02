@@ -3,8 +3,8 @@ model genetic_toggle
   // species and reactions
   var species TF1, TF2, RNA1, RNA2, I1, I2, COMPLEX1, COMPLEX2;
 
-  transcription1: -> RNA1; v1 * K1^n1 / (K1^n1 + TF2^n1);
-  transcription2: -> RNA2; v2 * K2^n2 / (K2^n2 + TF1^n2);
+  transcription1: -> RNA1; v1 * K2^n1 / (K2^n1 + TF2^n1);
+  transcription2: -> RNA2; v2 * K1^n2 / (K1^n2 + TF1^n2);
 
   rna_deg1: RNA1 -> ; d1 * RNA1;
   rna_deg2: RNA2 -> ; d2 * RNA2;
@@ -12,8 +12,8 @@ model genetic_toggle
   translation1: RNA1 -> RNA1 + TF1; v3 * RNA1;
   translation2: RNA2 -> RNA2 + TF2; v4 * RNA2;
 
-  prot_deg: TF1 -> ; d3 * TF1;
-  prot_deg: TF2 -> ; d4 * TF2;
+  prot_deg1: TF1 -> ; d3 * TF1;
+  prot_deg2: TF2 -> ; d4 * TF2;
 
   inactivation1: I1 + TF1 -> COMPLEX1; kf1 * I1 * TF1;
   inactivation2: I2 + TF2 -> COMPLEX2; kf1 * I2 * TF2;
@@ -23,6 +23,8 @@ model genetic_toggle
 
   complex_deg1: COMPLEX1 -> ; d5 * COMPLEX1;
   complex_deg2: COMPLEX2 -> ; d6 * COMPLEX2;
+  signal_deg1: I1 -> ; d7 * I1;
+  signal_deg2: I2 -> ; d8 * I2;
 
   // set parameters here:
   v1 = 1e0;
@@ -37,6 +39,8 @@ model genetic_toggle
   d4 = 1e-1;
   d5 = 1e-1;
   d6 = 1e-1;
+  d7 = 1e-1;
+  d8 = 1e-1;
 
   kf1 = 1e-1;
   kf2 = 1e-1;
@@ -44,12 +48,12 @@ model genetic_toggle
   kr2 = 1e-3;
 
   K1 = 0.5;
-  K2 = 0.5
+  K2 = 0.5;
   n1 = 2;
   n2 = 2;
 
   // intial conditions (rest are zero)
-  TF2 = 1e0;
+  TF1 = 1e0;
 
   // induction events
   at (time > 120.0): I1 = 5e1;

@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use("TKAgg")
 
 # load model from a file
-with open("models/toggle_modular.model") as model:
+with open("models/repressilator_modular.model") as model:
   r = te.loada(model.read())
 
 # simulate from 0 to 50 with 100 steps
